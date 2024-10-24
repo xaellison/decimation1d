@@ -1,4 +1,4 @@
-param S := 2;
+param S := 3;
 param N := 6;
 
 param:  x	y :=

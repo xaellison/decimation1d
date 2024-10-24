@@ -14,6 +14,20 @@ var membership {I, J} binary;
 
 set J2 := 1..(S+1);
 var splitters {J2} integer;
+
+# make everything finite
+subject to finite_membership {i in I, j in J}:
+	membership[i, j] >= 0;
+subject to finite_membership2 {i in I, j in J}:
+	membership[i, j] <= 1;
+	
+subject to finite_splitter1 {j in J2}:
+	splitters[j] <= N;
+	
+subject to finite_splitter2 {j in J2}:
+	splitters[j] >= 1;
+
+# constrain splitters
 subject to sorted_splitters {j in J}:
 	splitters[j] <= splitters[j+1] - 1; # avoid strict inequality warning
  
@@ -23,13 +37,15 @@ subject to pinned_start:
 subject to pinned_end:
 	splitters[S+1] = N;
 	
+# link membership and splitters
 subject to membership_between_splitters {i in I, j in J}:
 	(membership[i, j] = 0) or
 	(membership[i, j] = 1 and splitters[j] <= i and i <= splitters[j+1]);
 
 
-# without this, membership stays zero
 
+
+# without this, membership stays zero
 
 subject to at_least_one_segment_per_point {i in I}:
 	sum{j in J} membership[i, j] >= 1;
